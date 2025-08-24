@@ -6,7 +6,7 @@ import cint from 'wsemi/src/cint.mjs'
 import ot from 'dayjs'
 
 
-let parserEq = (o) => {
+let parseData = (o) => {
     //heads:
     //   "eArea": "小區域有感地震",
     //   "eDetailsEvent": "第{0}號",
@@ -149,4 +149,4 @@ let parserEq = (o) => {
 }
 
 
-export default parserEq
+export default parseData
