@@ -3,7 +3,9 @@ import get from 'lodash-es/get.js'
 import each from 'lodash-es/each.js'
 import reverse from 'lodash-es/reverse.js'
 import isestr from 'wsemi/src/isestr.mjs'
+import isnum from 'wsemi/src/isnum.mjs'
 import isfun from 'wsemi/src/isfun.mjs'
+import cint from 'wsemi/src/cint.mjs'
 import fsIsFolder from 'wsemi/src/fsIsFolder.mjs'
 import fsCleanFolder from 'wsemi/src/fsCleanFolder.mjs'
 import fsCreateFolder from 'wsemi/src/fsCreateFolder.mjs'
@@ -63,6 +65,18 @@ import cropPic from './cropPic.mjs'
  *
  */
 let WDwdataTweq = async(yearStart, yearEnd, opt = {}) => {
+
+    //check yearStart
+    if (!isnum(yearStart)) {
+        throw new Error(`yearStart is not a number`)
+    }
+    yearStart = cint(yearStart)
+
+    //check yearEnd
+    if (!isnum(yearEnd)) {
+        throw new Error(`yearEnd is not a number`)
+    }
+    yearEnd = cint(yearEnd)
 
     //keyId
     let keyId = get(opt, 'keyId')
