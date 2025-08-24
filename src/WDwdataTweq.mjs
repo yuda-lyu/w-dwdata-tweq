@@ -25,7 +25,7 @@ import cropPic from './cropPic.mjs'
  * @param {String} [opt.keyId] 輸入各筆數據之主鍵字串，預設keyId
  * @param {String} [opt.fdDwAttime] 輸入當前下載數據資料夾字串，預設'./_dwAttime'
  * @param {String} [opt.fdDwCurrent] 輸入已下載數據資料夾字串，預設'./_dwCurrent'
- * @param {String} [opt.fdResult] 輸入已下載數據所連動生成數據資料夾字串，預設'./_result'
+ * @param {String} [opt.fdResult] 輸入已下載數據所連動生成數據資料夾字串，預設`./_result`
  * @param {String} [opt.fdTaskCpSrc] 輸入任務狀態之來源端資料夾字串，預設'./_taskCpSrc'
  * @param {Function} [opt.funDownload] 輸入自定義下載函數，回傳資料陣列
  * @param {Function} [opt.funGetCurrent] 輸入自定義取得當前資料函數，回傳資料陣列
@@ -91,7 +91,7 @@ let WDwdataTweq = async(yearStart, yearEnd, opt = {}) => {
     //fdResult
     let fdResult = get(opt, 'fdResult')
     if (!isestr(fdResult)) {
-        fdResult = './_result'
+        fdResult = `./_result`
     }
     if (!fsIsFolder(fdResult)) {
         fsCreateFolder(fdResult)
