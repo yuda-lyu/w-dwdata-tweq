@@ -1,4 +1,4 @@
-import { writeFile } from 'fs/promises'
+import fs from 'fs'
 import get from 'lodash-es/get.js'
 import isp0int from 'wsemi/src/isp0int.mjs'
 import cdbl from 'wsemi/src/cdbl.mjs'
@@ -21,7 +21,7 @@ let core = async (url, fp) => {
     let buffer = Buffer.from(arrayBuffer)
 
     //writeFile
-    await writeFile(fp, buffer)
+    fs.writeFileSync(fp, buffer)
 
 }
 
