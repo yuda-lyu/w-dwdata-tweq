@@ -29,6 +29,7 @@ import cropPic from './cropPic.mjs'
  * @param {String} [opt.fdDwCurrent] 輸入已下載數據資料夾字串，預設'./_dwCurrent'
  * @param {String} [opt.fdResult] 輸入已下載數據所連動生成數據資料夾字串，預設`./_result`
  * @param {String} [opt.fdTaskCpSrc] 輸入任務狀態之來源端資料夾字串，預設'./_taskCpSrc'
+ * @param {String} [opt.fdLog] 輸入儲存log資料夾字串，預設'./_logs'
  * @param {Function} [opt.funDownload] 輸入自定義下載函數，回傳資料陣列
  * @param {Function} [opt.funGetCurrent] 輸入自定義取得當前資料函數，回傳資料陣列
  * @param {Function} [opt.funAdd] 輸入當有新資料時，需要連動處理之函數
@@ -118,6 +119,15 @@ let WDwdataTweq = async(yearStart, yearEnd, opt = {}) => {
     }
     if (!fsIsFolder(fdTaskCpSrc)) {
         fsCreateFolder(fdTaskCpSrc)
+    }
+
+    //fdLog
+    let fdLog = get(opt, 'fdLog')
+    if (!isestr(fdLog)) {
+        fdLog = './_logs'
+    }
+    if (!fsIsFolder(fdLog)) {
+        fsCreateFolder(fdLog)
     }
 
     //funDownload
@@ -245,6 +255,7 @@ let WDwdataTweq = async(yearStart, yearEnd, opt = {}) => {
         fdDwCurrent,
         fdResult,
         fdTaskCpSrc,
+        fdLog,
         funDownload,
         funGetCurrent,
         funRemove,
