@@ -117,16 +117,16 @@ let parseData = (o) => {
 
         let r = {
 
-            id,
-            tag,
-            number,
-            time,
-            timeRec,
-            timeTag,
-            ml,
-            depth,
-            location,
-            intensity,
+            id, //地震id
+            tag, //地震戳記
+            number, //當年地震編號
+            time, //地震UTC時間
+            timeRec, //地震顯示時間
+            timeTag, //地震戳記時間
+            ml, //芮式規模
+            depth, //深度(km)
+            location, //地震位置
+            intensity, //最大震度
             longitude,
             latitude,
 
