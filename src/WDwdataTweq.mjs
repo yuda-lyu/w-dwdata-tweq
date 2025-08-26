@@ -201,7 +201,6 @@ let WDwdataTweq = async(yearStart, yearEnd, opt = {}) => {
     let funRemoveDef = async(v) => {
 
         let fd = `${fdResult}/${v[keyId]}`
-
         if (fsIsFolder(fd)) {
             fsDeleteFolder(fd)
         }
@@ -215,10 +214,10 @@ let WDwdataTweq = async(yearStart, yearEnd, opt = {}) => {
     let funAddDef = async(v) => {
 
         let fd = `${fdResult}/${v[keyId]}`
-
-        if (fsIsFolder(fd)) {
-            fsCleanFolder(fd)
+        if (!fsIsFolder(fd)) {
+            fsCreateFolder(fd)
         }
+        fsCleanFolder(fd)
 
         await downloadPics(fd, v)
 
@@ -237,10 +236,10 @@ let WDwdataTweq = async(yearStart, yearEnd, opt = {}) => {
     let funModifyDef = async(v) => {
 
         let fd = `${fdResult}/${v[keyId]}`
-
-        if (fsIsFolder(fd)) {
-            fsCleanFolder(fd)
+        if (!fsIsFolder(fd)) {
+            fsCreateFolder(fd)
         }
+        fsCleanFolder(fd)
 
         await downloadPics(fd, v)
 
