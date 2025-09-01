@@ -129,9 +129,9 @@ describe('WDwdataTweq', function() {
     let ms = [
         { event: 'start', msg: 'running...' },
         { event: 'proc-callfun-download', msg: 'start...' },
-        { event: 'proc-callfun-download', msg: 'done' },
+        { event: 'proc-callfun-download', num: 2, msg: 'done' },
         { event: 'proc-callfun-getCurrent', msg: 'start...' },
-        { event: 'proc-callfun-getCurrent', msg: 'done' },
+        { event: 'proc-callfun-getCurrent', num: 0, msg: 'done' },
         { event: 'compare', msg: 'start...' },
         { event: 'compare', msg: 'done' },
         { event: 'proc-add-callfun-add', id: '114115', msg: 'start...' },
