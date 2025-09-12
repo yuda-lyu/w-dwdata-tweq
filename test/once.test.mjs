@@ -13,6 +13,10 @@ describe('once', function() {
 
         let ms = []
 
+        //fdTagRemove
+        let fdTagRemove = `./_once_tagRemove`
+        w.fsCleanFolder(fdTagRemove)
+
         //fdDwAttime
         let fdDwAttime = `./_once_dwAttime`
         w.fsCleanFolder(fdDwAttime)
@@ -24,6 +28,14 @@ describe('once', function() {
         //fdResult
         let fdResult = `./_once_result`
         w.fsCleanFolder(fdResult)
+
+        //fdTaskCpActualSrc
+        let fdTaskCpActualSrc = `./_once_taskCpActualSrc`
+        w.fsCleanFolder(fdTaskCpActualSrc)
+
+        //fdTaskCpSrc
+        let fdTaskCpSrc = `./_once_taskCpSrc`
+        w.fsCleanFolder(fdTaskCpSrc)
 
         //funDownload
         let funDownload = async() => {
@@ -80,9 +92,13 @@ describe('once', function() {
         let yearStart = 2022
         let yearEnd = 2022
         let opt = {
+            fdTagRemove,
             fdDwAttime,
             fdDwCurrent,
             fdResult,
+            fdTaskCpActualSrc,
+            fdTaskCpSrc,
+            // fdLog,
             funDownload,
             // funGetCurrent,
             // funRemove,
@@ -102,9 +118,14 @@ describe('once', function() {
             ms.push(msg)
         })
         ev.on('end', () => {
+
+            w.fsDeleteFolder(fdTagRemove)
             w.fsDeleteFolder(fdDwAttime)
             w.fsDeleteFolder(fdDwCurrent)
             w.fsDeleteFolder(fdResult)
+            w.fsDeleteFolder(fdTaskCpActualSrc)
+            w.fsDeleteFolder(fdTaskCpSrc)
+
             // console.log('ms', ms)
             pm.resolve(ms)
         })

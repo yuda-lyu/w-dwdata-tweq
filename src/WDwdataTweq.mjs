@@ -29,6 +29,7 @@ import cropPic from './cropPic.mjs'
  * @param {Integer} yearEnd 輸入數據結束年整數
  * @param {Object} [opt={}] 輸入設定物件，預設{}
  * @param {String} [opt.keyId='keyId'] 輸入各筆數據之主鍵字串，預設'keyId'
+ * @param {String} [opt.fdTagRemove='./_tagRemove'] 輸入暫存標記為刪除數據資料夾字串，預設'./_tagRemove'
  * @param {String} [opt.fdDwAttime='./_dwAttime'] 輸入當前下載數據資料夾字串，預設'./_dwAttime'
  * @param {String} [opt.fdDwCurrent='./_dwCurrent'] 輸入已下載數據資料夾字串，預設'./_dwCurrent'
  * @param {String} [opt.fdResult='./_result'] 輸入已下載數據所連動生成數據資料夾字串，預設'./_result'
@@ -44,11 +45,49 @@ import cropPic from './cropPic.mjs'
  * @returns {Object} 回傳事件物件，可呼叫函數on監聽change事件
  * @example
  *
+ * import w from 'wsemi'
  * import WDwdataTweq from './src/WDwdataTweq.mjs'
+ *
+ * //fdTagRemove
+ * let fdTagRemove = `./_tagRemove`
+ * w.fsCleanFolder(fdTagRemove)
+ *
+ * //fdDwAttime
+ * let fdDwAttime = `./_dwAttime`
+ * w.fsCleanFolder(fdDwAttime)
+ *
+ * //fdDwCurrent
+ * let fdDwCurrent = `./_dwCurrent`
+ * w.fsCleanFolder(fdDwCurrent)
+ *
+ * //fdResult
+ * let fdResult = `./_result`
+ * w.fsCleanFolder(fdResult)
+ *
+ * //fdTaskCpActualSrc
+ * let fdTaskCpActualSrc = `./_taskCpActualSrc`
+ * w.fsCleanFolder(fdTaskCpActualSrc)
+ *
+ * //fdTaskCpSrc
+ * let fdTaskCpSrc = `./_taskCpSrc`
+ * w.fsCleanFolder(fdTaskCpSrc)
  *
  * let yearStart = 2022
  * let yearEnd = 2022
- * let opt = {}
+ * let opt = {
+ *     fdTagRemove,
+ *     fdDwAttime,
+ *     fdDwCurrent,
+ *     fdResult,
+ *     fdTaskCpActualSrc,
+ *     fdTaskCpSrc,
+ *     // fdLog,
+ *     // funDownload,
+ *     // funGetCurrent,
+ *     // funRemove,
+ *     // funAdd,
+ *     // funModify,
+ * }
  * let ev = await WDwdataTweq(yearStart, yearEnd, opt)
  *     .catch((err) => {
  *         console.log(err)
@@ -93,6 +132,12 @@ let WDwdataTweq = async(yearStart, yearEnd, opt = {}) => {
         keyId = `id`
     }
 
+    //fdTagRemove, 暫存標記為刪除數據資料夾
+    let fdTagRemove = get(opt, 'fdTagRemove')
+    if (!isestr(fdTagRemove)) {
+        fdTagRemove = `./_tagRemove`
+    }
+
     //fdDwAttime
     let fdDwAttime = get(opt, 'fdDwAttime')
     if (!isestr(fdDwAttime)) {
@@ -118,6 +163,15 @@ let WDwdataTweq = async(yearStart, yearEnd, opt = {}) => {
     }
     if (!fsIsFolder(fdResult)) {
         fsCreateFolder(fdResult)
+    }
+
+    //fdTaskCpActualSrc, 儲存完整任務狀態資料夾
+    let fdTaskCpActualSrc = get(opt, 'fdTaskCpActualSrc')
+    if (!isestr(fdTaskCpActualSrc)) {
+        fdTaskCpActualSrc = `./_taskCpActualSrc`
+    }
+    if (!fsIsFolder(fdTaskCpActualSrc)) {
+        fsCreateFolder(fdTaskCpActualSrc)
     }
 
     //fdTaskCpSrc
@@ -270,11 +324,12 @@ let WDwdataTweq = async(yearStart, yearEnd, opt = {}) => {
         funModify = funModifyDef
     }
 
-    //WDwdataBuilder
     let optBdr = {
+        fdTagRemove,
         fdDwAttime,
         fdDwCurrent,
-        fdResult,
+        // fdResult, //WDwdataBuilder不需要
+        fdTaskCpActualSrc,
         fdTaskCpSrc,
         fdLog,
         funDownload,

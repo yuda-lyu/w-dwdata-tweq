@@ -5,6 +5,10 @@ import w from 'wsemi'
 import WDwdataTweq from './src/WDwdataTweq.mjs'
 
 
+//fdTagRemove
+let fdTagRemove = `./_tagRemove`
+w.fsCleanFolder(fdTagRemove)
+
 //fdDwAttime
 let fdDwAttime = `./_dwAttime`
 w.fsCleanFolder(fdDwAttime)
@@ -17,12 +21,24 @@ w.fsCleanFolder(fdDwCurrent)
 let fdResult = `./_result`
 w.fsCleanFolder(fdResult)
 
+//fdTaskCpActualSrc
+let fdTaskCpActualSrc = `./_taskCpActualSrc`
+w.fsCleanFolder(fdTaskCpActualSrc)
+
+//fdTaskCpSrc
+let fdTaskCpSrc = `./_taskCpSrc`
+w.fsCleanFolder(fdTaskCpSrc)
+
 let yearStart = 2022
 let yearEnd = 2022
 let opt = {
+    fdTagRemove,
     fdDwAttime,
     fdDwCurrent,
     fdResult,
+    fdTaskCpActualSrc,
+    fdTaskCpSrc,
+    // fdLog,
     // funDownload,
     // funGetCurrent,
     // funRemove,

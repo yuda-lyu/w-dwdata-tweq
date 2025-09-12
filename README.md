@@ -20,11 +20,49 @@ npm i w-dwdata-tweq
 #### Example:
 > **Link:** [[dev source code](https://github.com/yuda-lyu/w-dwdata-tweq/blob/master/g.mjs)]
 ```alias
+import w from 'wsemi'
 import WDwdataTweq from './src/WDwdataTweq.mjs'
+
+//fdTagRemove
+let fdTagRemove = `./_tagRemove`
+w.fsCleanFolder(fdTagRemove)
+
+//fdDwAttime
+let fdDwAttime = `./_dwAttime`
+w.fsCleanFolder(fdDwAttime)
+
+//fdDwCurrent
+let fdDwCurrent = `./_dwCurrent`
+w.fsCleanFolder(fdDwCurrent)
+
+//fdResult
+let fdResult = `./_result`
+w.fsCleanFolder(fdResult)
+
+//fdTaskCpActualSrc
+let fdTaskCpActualSrc = `./_taskCpActualSrc`
+w.fsCleanFolder(fdTaskCpActualSrc)
+
+//fdTaskCpSrc
+let fdTaskCpSrc = `./_taskCpSrc`
+w.fsCleanFolder(fdTaskCpSrc)
 
 let yearStart = 2022
 let yearEnd = 2022
-let opt = {}
+let opt = {
+    fdTagRemove,
+    fdDwAttime,
+    fdDwCurrent,
+    fdResult,
+    fdTaskCpActualSrc,
+    fdTaskCpSrc,
+    // fdLog,
+    // funDownload,
+    // funGetCurrent,
+    // funRemove,
+    // funAdd,
+    // funModify,
+}
 let ev = await WDwdataTweq(yearStart, yearEnd, opt)
     .catch((err) => {
         console.log(err)
