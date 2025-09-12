@@ -5,7 +5,7 @@ import assert from 'assert'
 import WDwdataTweq from '../src/WDwdataTweq.mjs'
 
 
-describe('WDwdataTweq', function() {
+describe('once', function() {
 
     let test = async() => {
 
@@ -14,15 +14,15 @@ describe('WDwdataTweq', function() {
         let ms = []
 
         //fdDwAttime
-        let fdDwAttime = `./_dwAttime`
+        let fdDwAttime = `./_once_dwAttime`
         w.fsCleanFolder(fdDwAttime)
 
         //fdDwCurrent
-        let fdDwCurrent = `./_dwCurrent`
+        let fdDwCurrent = `./_once_dwCurrent`
         w.fsCleanFolder(fdDwCurrent)
 
         //fdResult
-        let fdResult = `./_result`
+        let fdResult = `./_once_result`
         w.fsCleanFolder(fdResult)
 
         //funDownload
@@ -45,7 +45,7 @@ describe('WDwdataTweq', function() {
                     'urlPicEqReport': 'https://scweb.cwa.gov.tw/webdata/OLDEQ/202508/2025082116374751115.gif',
                     'urlPicEqIntensity': 'https://scweb.cwa.gov.tw/webdata/drawTrace/plotContour/2025/2025115i.png',
                     'urlPicEqPga': 'https://scweb.cwa.gov.tw/webdata/drawTrace/plotContour/2025/2025115a.png',
-                    'urlPicEqPgv': 'https://scweb.cwa.gov.tw/webdata/drawTrace/plotContour/2025/2025115v.png'
+                    'urlPicEqPgv': 'https://scweb.cwa.gov.tw/webdata/drawTrace/plotContour/2025/2025115v.png',
                 },
                 {
                     'id': '114116',
@@ -62,7 +62,7 @@ describe('WDwdataTweq', function() {
                     'urlPicEqReport': 'https://scweb.cwa.gov.tw/webdata/OLDEQ/202508/2025082214061554116.gif',
                     'urlPicEqIntensity': 'https://scweb.cwa.gov.tw/webdata/drawTrace/plotContour/2025/2025116i.png',
                     'urlPicEqPga': 'https://scweb.cwa.gov.tw/webdata/drawTrace/plotContour/2025/2025116a.png',
-                    'urlPicEqPgv': 'https://scweb.cwa.gov.tw/webdata/drawTrace/plotContour/2025/2025116v.png'
+                    'urlPicEqPgv': 'https://scweb.cwa.gov.tw/webdata/drawTrace/plotContour/2025/2025116v.png',
                 },
             ]
 
@@ -100,48 +100,44 @@ describe('WDwdataTweq', function() {
             delete msg.timeRunSpent
             // console.log('change', msg)
             ms.push(msg)
-            if (msg.event === 'end') {
-                // console.log('ms', ms)
-                pm.resolve(ms)
-            }
         })
-        // change { event: 'start', msg: 'running...' }
-        // change { event: 'proc-callfun-download', msg: 'start...' }
-        // change { event: 'proc-callfun-download', msg: 'done' }
-        // change { event: 'proc-callfun-getCurrent', msg: 'start...' }
-        // change { event: 'proc-callfun-getCurrent', msg: 'done' }
-        // change { event: 'compare', msg: 'start...' }
-        // change { event: 'compare', numRemove: 0, numAdd: 2, numModify: 0, numSame: 0, msg: 'done' }
-        // change { event: 'proc-add-callfun-add', id: '114116', msg: 'start...' }
-        // change { event: 'proc-add-callfun-add', id: '114116', msg: 'done' }
-        // change { event: 'proc-add-callfun-add', id: '114115', msg: 'start...' }
-        // change { event: 'proc-add-callfun-add', id: '114115', msg: 'done' }
-        // change {
-        //   event: 'end',
-        //   timeRunStart: '2025-08-23T15:47:24+08:00',
-        //   timeRunEnd: '2025-08-23T15:47:24+08:00',
-        //   timeRunSpent: '0s',
-        //   msg: 'done'
-        // }
+        ev.on('end', () => {
+            w.fsDeleteFolder(fdDwAttime)
+            w.fsDeleteFolder(fdDwCurrent)
+            w.fsDeleteFolder(fdResult)
+            // console.log('ms', ms)
+            pm.resolve(ms)
+        })
 
         return pm
     }
     let ms = [
         { event: 'start', msg: 'running...' },
+        { event: 'proc-callfun-afterStart', msg: 'start...' },
+        { event: 'proc-callfun-afterStart', msg: 'done' },
         { event: 'proc-callfun-download', msg: 'start...' },
         { event: 'proc-callfun-download', num: 2, msg: 'done' },
         { event: 'proc-callfun-getCurrent', msg: 'start...' },
         { event: 'proc-callfun-getCurrent', num: 0, msg: 'done' },
         { event: 'compare', msg: 'start...' },
-        { event: 'compare', numRemove: 0, numAdd: 2, numModify: 0, numSame: 0, msg: 'done' },
+        {
+            event: 'compare',
+            numRemove: 0,
+            numAdd: 2,
+            numModify: 0,
+            numSame: 0,
+            msg: 'done'
+        },
         { event: 'proc-add-callfun-add', id: '114115', msg: 'start...' },
         { event: 'proc-add-callfun-add', id: '114115', msg: 'done' },
         { event: 'proc-add-callfun-add', id: '114116', msg: 'start...' },
         { event: 'proc-add-callfun-add', id: '114116', msg: 'done' },
+        { event: 'proc-callfun-beforeEnd', msg: 'start...' },
+        { event: 'proc-callfun-beforeEnd', msg: 'done' },
         { event: 'end', msg: 'done' }
     ]
 
-    it('test in localhost', async () => {
+    it('test once', async () => {
         let r = await test()
         let rr = ms
         assert.strict.deepEqual(r, rr)

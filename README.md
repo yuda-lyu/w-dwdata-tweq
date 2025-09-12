@@ -1,5 +1,5 @@
 # w-dwdata-tweq
-A download tool for earthquake data from Taiwan CWA.
+A downloader for earthquake data from Taiwan CWA.
 
 ![language](https://img.shields.io/badge/language-JavaScript-orange.svg) 
 [![npm version](http://img.shields.io/npm/v/w-dwdata-tweq.svg?style=flat)](https://npmjs.org/package/w-dwdata-tweq) 
@@ -34,6 +34,8 @@ ev.on('change', (msg) => {
     console.log('change', msg)
 })
 // change { event: 'start', msg: 'running...' }
+// change { event: 'proc-callfun-afterStart', msg: 'start...' }
+// change { event: 'proc-callfun-afterStart', msg: 'done' }
 // change { event: 'proc-callfun-download', msg: 'start...' }
 // change { event: 'proc-callfun-download', num: 2, msg: 'done' }
 // change { event: 'proc-callfun-getCurrent', msg: 'start...' }

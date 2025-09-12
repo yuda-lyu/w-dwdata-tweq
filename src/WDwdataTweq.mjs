@@ -21,7 +21,9 @@ import cropPic from './cropPic.mjs'
 
 
 /**
- * 下載台灣氣象署地震資料
+ * 基於檔案之下載台灣氣象署地震數據與任務建構器
+ *
+ * 執行階段最新數據放置於fdDwAttime，前次數據放置於fdDwCurrent，於結束前會將fdDwAttime複製蓋過fdDwCurrent
  *
  * @param {Integer} yearStart 輸入數據開始年整數
  * @param {Integer} yearEnd 輸入數據結束年整數
@@ -56,6 +58,8 @@ import cropPic from './cropPic.mjs'
  *     console.log('change', msg)
  * })
  * // change { event: 'start', msg: 'running...' }
+ * // change { event: 'proc-callfun-afterStart', msg: 'start...' }
+ * // change { event: 'proc-callfun-afterStart', msg: 'done' }
  * // change { event: 'proc-callfun-download', msg: 'start...' }
  * // change { event: 'proc-callfun-download', num: 2, msg: 'done' }
  * // change { event: 'proc-callfun-getCurrent', msg: 'start...' }
@@ -221,6 +225,19 @@ let WDwdataTweq = async(yearStart, yearEnd, opt = {}) => {
         funRemove = funRemoveDef
     }
 
+    //downloadAndCropPics
+    let downloadAndCropPics = async(fd, v) => {
+
+        await downloadPics(fd, v)
+
+        let fnIn = 'picEqReport.gif'
+        let fpIn = `${fd}/${fnIn}`
+        let fnOut = 'picEqIntensityList.gif'
+        let fpOut = `${fd}/${fnOut}`
+        await cropPic(fpIn, fpOut, 364, 199, 276, 204)
+
+    }
+
     //funAddDef
     let funAddDef = async(v) => {
 
@@ -230,13 +247,7 @@ let WDwdataTweq = async(yearStart, yearEnd, opt = {}) => {
         }
         fsCleanFolder(fd)
 
-        await downloadPics(fd, v)
-
-        let fnIn = 'picEqReport.gif'
-        let fpIn = `${fd}/${fnIn}`
-        let fnOut = 'picEqIntensityList.gif'
-        let fpOut = `${fd}/${fnOut}`
-        await cropPic(fpIn, fpOut, 364, 199, 276, 204)
+        await downloadAndCropPics(fd, v)
 
     }
     if (!isfun(funAdd)) {
@@ -252,7 +263,7 @@ let WDwdataTweq = async(yearStart, yearEnd, opt = {}) => {
         }
         fsCleanFolder(fd)
 
-        await downloadPics(fd, v)
+        await downloadAndCropPics(fd, v)
 
     }
     if (!isfun(funModify)) {

@@ -54,6 +54,7 @@ let downloadFile = async (url, fp, opt = {}) => {
                 state = 'success'
             })
             .catch((err) => {
+                console.log(err)
                 errFin = err
             })
 
