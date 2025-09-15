@@ -23,7 +23,9 @@ import cropPic from './cropPic.mjs'
 /**
  * 基於檔案之下載台灣氣象署地震數據與任務建構器
  *
- * 執行階段最新數據放置於fdDwAttime，前次數據放置於fdDwCurrent，於結束前會將fdDwAttime複製蓋過fdDwCurrent
+ * 因各檔案小，真實數據直接視為hash數據做差異比對
+ *
+ * 執行階段最新數據放置於fdDwAttime，前次數據會於結束前自動備份至fdDwCurrent
  *
  * @param {Integer} yearStart 輸入數據開始年整數
  * @param {Integer} yearEnd 輸入數據結束年整數
@@ -36,8 +38,8 @@ import cropPic from './cropPic.mjs'
  * @param {String} [opt.fdTaskCpActualSrc='./_taskCpActualSrc'] 輸入任務狀態之來源端完整資料夾字串，預設'./_taskCpActualSrc'
  * @param {String} [opt.fdTaskCpSrc='./_taskCpSrc'] 輸入任務狀態之來源端資料夾字串，預設'./_taskCpSrc'
  * @param {String} [opt.fdLog='./_logs'] 輸入儲存log資料夾字串，預設'./_logs'
- * @param {Function} [opt.funDownload=null] 輸入自定義當前下載之hash數據處理函數，回傳資料陣列，預設null
- * @param {Function} [opt.funGetCurrent=null] 輸入自定義已下載之hash數據處理函數，回傳資料陣列，預設null
+ * @param {Function} [opt.funDownload=null] 輸入取得當前下載數據之函數，回傳資料陣列，預設null
+ * @param {Function} [opt.funGetCurrent=null] 輸入取得已下載數據之函數，回傳資料陣列，預設null
  * @param {Function} [opt.funAdd=null] 輸入當有新資料時，需要連動處理之函數，預設null
  * @param {Function} [opt.funModify=null] 輸入當有資料需更新時，需要連動處理之函數，預設null
  * @param {Function} [opt.funRemove=null] 輸入當有資料需刪除時，需要連動處理之函數，預設null
