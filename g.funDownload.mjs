@@ -188,9 +188,9 @@ let run = async() => {
 await w.pmSeries(kpEqs, async() => {
     await run()
 })
-// change { event: 'compare', msg: 'start...' }
+// change { event: 'proc-compare', msg: 'start...' }
 // change {
-//   event: 'compare',
+//   event: 'proc-compare',
 //   numRemove: 0,
 //   numAdd: 1,
 //   numModify: 0,
@@ -200,9 +200,9 @@ await w.pmSeries(kpEqs, async() => {
 // change { event: 'proc-add-callfun-add', id: '114115', msg: 'start...' }
 // change { event: 'proc-add-callfun-add', id: '114115', msg: 'done' }
 // change { event: 'end', msg: 'done' }
-// change { event: 'compare', msg: 'start...' }
+// change { event: 'proc-compare', msg: 'start...' }
 // change {
-//   event: 'compare',
+//   event: 'proc-compare',
 //   numRemove: 0,
 //   numAdd: 1,
 //   numModify: 0,
@@ -212,9 +212,9 @@ await w.pmSeries(kpEqs, async() => {
 // change { event: 'proc-add-callfun-add', id: '114116', msg: 'start...' }
 // change { event: 'proc-add-callfun-add', id: '114116', msg: 'done' }
 // change { event: 'end', msg: 'done' }
-// change { event: 'compare', msg: 'start...' }
+// change { event: 'proc-compare', msg: 'start...' }
 // change {
-//   event: 'compare',
+//   event: 'proc-compare',
 //   numRemove: 0,
 //   numAdd: 0,
 //   numModify: 1,

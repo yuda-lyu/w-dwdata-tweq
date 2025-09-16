@@ -206,9 +206,9 @@ describe('multi', function() {
         return ms
     }
     let ms = [
-        { event: 'compare', msg: 'start...' },
+        { event: 'proc-compare', msg: 'start...' },
         {
-            event: 'compare',
+            event: 'proc-compare',
             numRemove: 0,
             numAdd: 1,
             numModify: 0,
@@ -218,9 +218,9 @@ describe('multi', function() {
         { event: 'proc-add-callfun-add', id: '114115', msg: 'start...' },
         { event: 'proc-add-callfun-add', id: '114115', msg: 'done' },
         { event: 'end', msg: 'done' },
-        { event: 'compare', msg: 'start...' },
+        { event: 'proc-compare', msg: 'start...' },
         {
-            event: 'compare',
+            event: 'proc-compare',
             numRemove: 0,
             numAdd: 1,
             numModify: 0,
@@ -230,9 +230,9 @@ describe('multi', function() {
         { event: 'proc-add-callfun-add', id: '114116', msg: 'start...' },
         { event: 'proc-add-callfun-add', id: '114116', msg: 'done' },
         { event: 'end', msg: 'done' },
-        { event: 'compare', msg: 'start...' },
+        { event: 'proc-compare', msg: 'start...' },
         {
-            event: 'compare',
+            event: 'proc-compare',
             numRemove: 0,
             numAdd: 0,
             numModify: 1,
