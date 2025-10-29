@@ -1,5 +1,6 @@
 import map from 'lodash-es/map.js'
 import join from 'lodash-es/join.js'
+import cint from 'wsemi/src/cint.mjs'
 import axios from 'axios'
 
 
@@ -21,9 +22,9 @@ let downloadEqs = async(yearStart, yearEnd) => {
 
     let url = 'https://scweb.cwa.gov.tw/zh-tw/earthquake/ajaxhandler'
 
-    let txtSDate = `${yearStart}-1-1`
+    let txtSDate = `${cint(yearStart)}-1-1`
     // let txtEDate = `${yearEnd}-12-31` //ot().format('YYYY')
-    let txtEDate = `${yearEnd + 1}-1-1` //ot().format('YYYY')
+    let txtEDate = `${cint(yearEnd) + 1}-1-1` //ot().format('YYYY')
 
     let postData = {
         'draw': 6, //DataTables的請求序號, 網頁使用時會自動遞增
