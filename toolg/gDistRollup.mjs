@@ -17,8 +17,7 @@ rollupFiles({
     globals: {
         'path': 'path',
         'fs': 'fs',
-        'url': 'url',
-        'pino': 'pino',
+        'crypto': 'crypto',
         'events': 'events',
         'chokidar': 'chokidar',
         'sharp': 'sharp',
@@ -26,8 +25,7 @@ rollupFiles({
     external: [
         'path',
         'fs',
-        'url',
-        'pino',
+        'crypto',
         'events',
         'chokidar',
         'sharp',

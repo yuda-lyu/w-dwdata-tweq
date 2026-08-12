@@ -1,7 +1,6 @@
 import map from 'lodash-es/map.js'
 import join from 'lodash-es/join.js'
 import cint from 'wsemi/src/cint.mjs'
-import axios from 'axios'
 
 
 let stringify = (obj) => {
@@ -107,12 +106,23 @@ let downloadEqs = async(yearStart, yearEnd) => {
 
     let r = null
     try {
-        let res = await axios.post(url, stringify(postData), {
+
+        //fetch
+        let res = await fetch(url, {
+            method: 'POST',
             headers: {
                 'Content-Type': 'application/x-www-form-urlencoded',
             },
+            body: stringify(postData),
         })
-        r = res.data
+
+        //check, fetch於非2xx時不拋錯, 須自行檢查
+        if (!res.ok) {
+            throw new Error(`can not download eqs, status[${res.status}]: ${res.statusText}`)
+        }
+
+        r = await res.json()
+
     }
     catch (err) {
         console.log(err)
