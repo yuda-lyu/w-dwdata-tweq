@@ -1,0 +1,247 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    
+    <meta charset="utf-8">
+    <title>downloadEqs.mjs - Documentation</title>
+    
+    
+    <script src="scripts/prettify/prettify.js"></script>
+    <script src="scripts/prettify/lang-css.js"></script>
+    <!--[if lt IE 9]>
+      <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+    <link type="text/css" rel="stylesheet" href="styles/prettify.css">
+    <link type="text/css" rel="stylesheet" href="styles/jsdoc.css">
+    <script src="scripts/nav.js" defer></script>
+    
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+</head>
+<body>
+
+<input type="checkbox" id="nav-trigger" class="nav-trigger" />
+<label for="nav-trigger" class="navicon-button x">
+  <div class="navicon"></div>
+</label>
+
+<label for="nav-trigger" class="overlay"></label>
+
+<nav >
+    
+    
+    <h2><a href="index.html">Home</a></h2><h3>Global</h3><ul><li><a href="global.html#WDwdataTweq">WDwdataTweq</a></li><li><a href="global.html#downloadEqs">downloadEqs</a></li></ul>
+    
+</nav>
+
+<div id="main">
+    
+    <h1 class="page-title">downloadEqs.mjs</h1>
+    
+
+    
+
+
+
+    
+    <section>
+        <article>
+            <pre class="prettyprint source linenums"><code>import map from 'lodash-es/map.js'
+import join from 'lodash-es/join.js'
+import isestr from 'wsemi/src/isestr.mjs'
+import ot from 'dayjs'
+
+
+let stringify = (obj) => {
+
+    let rs = map(obj, (value, key) => {
+        // null or undefined 處理成空字串
+        let v = value == null ? '' : value
+        return `${encodeURIComponent(key)}=${encodeURIComponent(v)}`
+    })
+
+    let c = join(rs, '&amp;')
+
+    return c
+}
+
+
+/**
+ * 下載台灣氣象署指定日期區間之地震數據
+ *
+ * 起訖日期於氣象署端皆為整日含括，故dayStart當日與dayEnd當日之地震數據皆會取得
+ *
+ * @param {String} dayStart 輸入數據開始日字串，需為dayjs可解析之日期，如'2022-12-24'
+ * @param {String} dayEnd 輸入數據結束日字串，需為dayjs可解析之日期，如'2022-12-31'
+ * @returns {Promise} 回傳Promise，resolve回傳氣象署之原始數據物件，下載失敗時回傳null
+ * @example
+ *
+ * import downloadEqs from './src/downloadEqs.mjs'
+ *
+ * let v = await downloadEqs('2022-12-24', '2022-12-31')
+ * console.log(v)
+ * // {
+ * //   ...
+ * //   recordsTotal: 16721,
+ * //   data: [ [ '2022122405175952184', '184   ', '2022-12-24 05:17:59', ... ] ]
+ * // }
+ *
+ */
+let downloadEqs = async(dayStart, dayEnd) => {
+
+    //check dayStart
+    if (!isestr(dayStart)) {
+        throw new Error(`dayStart is not an effective string`)
+    }
+    let tStart = ot(dayStart)
+    if (!tStart.isValid()) {
+        throw new Error(`dayStart is not a valid date`)
+    }
+
+    //check dayEnd
+    if (!isestr(dayEnd)) {
+        throw new Error(`dayEnd is not an effective string`)
+    }
+    let tEnd = ot(dayEnd)
+    if (!tEnd.isValid()) {
+        throw new Error(`dayEnd is not a valid date`)
+    }
+
+    let url = 'https://scweb.cwa.gov.tw/zh-tw/earthquake/ajaxhandler'
+
+    //txtSDate, txtEDate, 氣象署端起訖日皆為整日含括, 故直接對應無須加減日
+    let txtSDate = tStart.format('YYYY-M-D')
+    let txtEDate = tEnd.format('YYYY-M-D')
+
+    let postData = {
+        'draw': 6, //DataTables的請求序號, 網頁使用時會自動遞增
+        'columns[0][data]': 0,
+        'columns[0][name]': 'EventNo',
+        'columns[0][searchable]': false,
+        'columns[0][orderable]': true,
+        'columns[0][search][value]': '',
+        'columns[0][search][regex]': false,
+        'columns[1][data]': 1,
+        'columns[1][name]': 'MaxIntensity',
+        'columns[1][searchable]': true,
+        'columns[1][orderable]': true,
+        'columns[1][search][value]': '',
+        'columns[1][search][regex]': false,
+        'columns[2][data]': 2,
+        'columns[2][name]': 'OriginTime',
+        'columns[2][searchable]': true,
+        'columns[2][orderable]': true,
+        'columns[2][search][value]': '',
+        'columns[2][search][regex]': false,
+        'columns[3][data]': 3,
+        'columns[3][name]': 'MagnitudeValue',
+        'columns[3][searchable]': true,
+        'columns[3][orderable]': true,
+        'columns[3][search][value]': '',
+        'columns[3][search][regex]': false,
+        'columns[4][data]': 4,
+        'columns[4][name]': 'Depth',
+        'columns[4][searchable]': true,
+        'columns[4][orderable]': true,
+        'columns[4][search][value]': '',
+        'columns[4][search][regex]': false,
+        'columns[5][data]': 5,
+        'columns[5][name]': 'Description',
+        'columns[5][searchable]': true,
+        'columns[5][orderable]': true,
+        'columns[5][search][value]': '',
+        'columns[5][search][regex]': false,
+        'columns[6][data]': 6,
+        'columns[6][name]': 'Description',
+        'columns[6][searchable]': true,
+        'columns[6][orderable]': true,
+        'columns[6][search][value]': '',
+        'columns[6][search][regex]': false,
+        'order[0][column]': 2,
+        'order[0][dir]': 'desc',
+        'start': 0,
+        'length': -1, //全部資料
+        'search[value]': '',
+        'search[regex]': false,
+        'Search': '',
+        txtSDate,
+        txtEDate,
+        'txtSscale': '',
+        'txtEscale': '',
+        'txtSdepth': '',
+        'txtEdepth': '',
+        'txtLonS': '',
+        'txtLonE': '',
+        'txtLatS': '',
+        'txtLatE': '',
+        'ddlCity': '',
+        'ddlTown': '',
+        'ddlCitySta': '',
+        'ddlStation': '',
+        'txtIntensityB': '',
+        'txtIntensityE': '',
+        'txtLon': '',
+        'txtLat': '',
+        'txtKM': '',
+        'ddlStationName': '------',
+        'cblEventNo': 'Y',
+        'txtSDatePWS': '',
+        'txtEDatePWS': '',
+        'txtSscalePWS': '',
+        'txtEscalePWS': '',
+        'ddlMark': '',
+    }
+
+    let r = null
+    try {
+
+        //fetch
+        let res = await fetch(url, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/x-www-form-urlencoded',
+            },
+            body: stringify(postData),
+        })
+
+        //check, fetch於非2xx時不拋錯, 須自行檢查
+        if (!res.ok) {
+            throw new Error(`can not download eqs, status[${res.status}]: ${res.statusText}`)
+        }
+
+        r = await res.json()
+
+    }
+    catch (err) {
+        console.log(err)
+    }
+
+    return r
+}
+
+
+export default downloadEqs
+</code></pre>
+        </article>
+    </section>
+
+
+
+
+    
+    
+</div>
+
+<br class="clear">
+
+<footer>
+    Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 4.0.5</a> on Sat Aug 15 2026 15:40:17 GMT+0800 (台北標準時間) using the <a href="https://github.com/clenemt/docdash">docdash</a> theme.
+</footer>
+
+<script>prettyPrint();</script>
+<script src="scripts/polyfill.js"></script>
+<script src="scripts/linenumber.js"></script>
+
+
+
+</body>
+</html>
