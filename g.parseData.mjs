@@ -5,9 +5,9 @@ import w from 'wsemi'
 import parseData from './src/parseData.mjs'
 
 
-let yearStart = 2025
-let yearEnd = 2025
-let fp = `./year_${yearStart}_${yearEnd}_eq.json`
+let dayStart = '2025-1-1'
+let dayEnd = '2025-12-31'
+let fp = `./day_${dayStart}_${dayEnd}_eq.json`
 let j = fs.readFileSync(fp, 'utf8')
 let v = JSON.parse(j)
 
@@ -20,7 +20,7 @@ let eq = _.filter(eqs, (v) => {
 eq = eq[0]
 console.log('eq', eq)
 
-fs.writeFileSync(`./year_${yearStart}_${yearEnd}_eqs.json`, JSON.stringify(eqs, null, 2), 'utf8')
+fs.writeFileSync(`./day_${dayStart}_${dayEnd}_eqs.json`, JSON.stringify(eqs, null, 2), 'utf8')
 
 
 //node g.parseData.mjs

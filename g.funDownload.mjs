@@ -143,8 +143,8 @@ let run = async() => {
         return eqs
     }
 
-    let yearStart = 2022
-    let yearEnd = 2022
+    let dayStart = '2022-1-1'
+    let dayEnd = '2022-12-31'
     let opt = {
         fdTagRemove,
         fdDwAttime,
@@ -160,7 +160,7 @@ let run = async() => {
         // funAdd,
         // funModify,
     }
-    let ev = await WDwdataTweq(yearStart, yearEnd, opt)
+    let ev = await WDwdataTweq(dayStart, dayEnd, opt)
         .catch((err) => {
             console.log(err)
         })

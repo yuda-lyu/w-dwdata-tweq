@@ -181,8 +181,8 @@ describe('srLog', function() {
             srLog = _.pick(srLogAll, keysSrLog)
         }
 
-        let yearStart = 2022
-        let yearEnd = 2022
+        let dayStart = '2022-1-1'
+        let dayEnd = '2022-12-31'
         let optTweq = {
             fdTagRemove,
             fdDwAttime,
@@ -199,7 +199,7 @@ describe('srLog', function() {
         if (_.isBoolean(useShowLog)) {
             optTweq.useShowLog = useShowLog
         }
-        let ev = await WDwdataTweq(yearStart, yearEnd, optTweq)
+        let ev = await WDwdataTweq(dayStart, dayEnd, optTweq)
             .catch((err) => {
                 console.log(err)
             })

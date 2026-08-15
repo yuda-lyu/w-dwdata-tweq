@@ -3,12 +3,11 @@ import get from 'lodash-es/get.js'
 import each from 'lodash-es/each.js'
 import reverse from 'lodash-es/reverse.js'
 import isestr from 'wsemi/src/isestr.mjs'
-import isnum from 'wsemi/src/isnum.mjs'
 import isp0int from 'wsemi/src/isp0int.mjs'
 import isbol from 'wsemi/src/isbol.mjs'
 import isfun from 'wsemi/src/isfun.mjs'
 import cdbl from 'wsemi/src/cdbl.mjs'
-import cint from 'wsemi/src/cint.mjs'
+import ot from 'dayjs'
 import fsIsFolder from 'wsemi/src/fsIsFolder.mjs'
 import fsCleanFolder from 'wsemi/src/fsCleanFolder.mjs'
 import fsCreateFolder from 'wsemi/src/fsCreateFolder.mjs'
@@ -28,8 +27,8 @@ import cropPic from './cropPic.mjs'
  *
  * 執行階段最新數據放置於fdDwAttime，前次數據會於結束前自動備份至fdDwCurrent
  *
- * @param {Integer} yearStart 輸入數據開始年整數
- * @param {Integer} yearEnd 輸入數據結束年整數
+ * @param {String} dayStart 輸入數據開始日字串，需為dayjs可解析之日期，如'2022-1-1'，氣象署端為整日含括故當日數據亦會取得
+ * @param {String} dayEnd 輸入數據結束日字串，需為dayjs可解析之日期，如'2022-12-31'，氣象署端為整日含括故當日數據亦會取得
  * @param {Object} [opt={}] 輸入設定物件，預設{}
  * @param {String} [opt.keyId='id'] 輸入各筆數據之主鍵字串，預設'id'
  * @param {String} [opt.fdTagRemove='./_tagRemove'] 輸入暫存標記為刪除數據資料夾字串，預設'./_tagRemove'
@@ -76,8 +75,8 @@ import cropPic from './cropPic.mjs'
  * let fdTaskCpSrc = `./_taskCpSrc`
  * w.fsCleanFolder(fdTaskCpSrc)
  *
- * let yearStart = 2022
- * let yearEnd = 2022
+ * let dayStart = '2022-1-1'
+ * let dayEnd = '2022-12-31'
  * let opt = {
  *     fdTagRemove,
  *     fdDwAttime,
@@ -93,7 +92,7 @@ import cropPic from './cropPic.mjs'
  *     // funAdd,
  *     // funModify,
  * }
- * let ev = await WDwdataTweq(yearStart, yearEnd, opt)
+ * let ev = await WDwdataTweq(dayStart, dayEnd, opt)
  *     .catch((err) => {
  *         console.log(err)
  *     })
@@ -117,19 +116,23 @@ import cropPic from './cropPic.mjs'
  * // ...
  *
  */
-let WDwdataTweq = async(yearStart, yearEnd, opt = {}) => {
+let WDwdataTweq = async(dayStart, dayEnd, opt = {}) => {
 
-    //check yearStart
-    if (!isnum(yearStart)) {
-        throw new Error(`yearStart is not a number`)
+    //check dayStart
+    if (!isestr(dayStart)) {
+        throw new Error(`dayStart is not an effective string`)
     }
-    yearStart = cint(yearStart)
+    if (!ot(dayStart).isValid()) {
+        throw new Error(`dayStart is not a valid date`)
+    }
 
-    //check yearEnd
-    if (!isnum(yearEnd)) {
-        throw new Error(`yearEnd is not a number`)
+    //check dayEnd
+    if (!isestr(dayEnd)) {
+        throw new Error(`dayEnd is not an effective string`)
     }
-    yearEnd = cint(yearEnd)
+    if (!ot(dayEnd).isValid()) {
+        throw new Error(`dayEnd is not a valid date`)
+    }
 
     //keyId
     let keyId = get(opt, 'keyId')
@@ -223,7 +226,7 @@ let WDwdataTweq = async(yearStart, yearEnd, opt = {}) => {
     let funDownloadDef = async() => {
 
         //downloadEqs
-        let v = await downloadEqs(yearStart, yearEnd)
+        let v = await downloadEqs(dayStart, dayEnd)
         // console.log('downloadEqs', v)
 
         //parseData
