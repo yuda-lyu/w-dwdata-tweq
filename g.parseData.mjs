@@ -5,7 +5,7 @@ import w from 'wsemi'
 import parseData from './src/parseData.mjs'
 
 
-let dayStart = '2025-1-1'
+let dayStart = '2025-01-01'
 let dayEnd = '2025-12-31'
 let fp = `./day_${dayStart}_${dayEnd}_eq.json`
 let j = fs.readFileSync(fp, 'utf8')

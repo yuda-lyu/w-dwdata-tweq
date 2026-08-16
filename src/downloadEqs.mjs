@@ -1,7 +1,6 @@
 import map from 'lodash-es/map.js'
 import join from 'lodash-es/join.js'
-import isestr from 'wsemi/src/isestr.mjs'
-import ot from 'dayjs'
+import isday from 'wsemi/src/isday.mjs'
 
 
 let stringify = (obj) => {
@@ -23,8 +22,8 @@ let stringify = (obj) => {
  *
  * 起訖日期於氣象署端皆為整日含括，故dayStart當日與dayEnd當日之地震數據皆會取得
  *
- * @param {String} dayStart 輸入數據開始日字串，需為dayjs可解析之日期，如'2022-12-24'
- * @param {String} dayEnd 輸入數據結束日字串，需為dayjs可解析之日期，如'2022-12-31'
+ * @param {String} dayStart 輸入數據開始日字串，需為'YYYY-MM-DD'格式之有效日期，如'2022-12-24'
+ * @param {String} dayEnd 輸入數據結束日字串，需為'YYYY-MM-DD'格式之有效日期，如'2022-12-31'
  * @returns {Promise} 回傳Promise，resolve回傳氣象署之原始數據物件，下載失敗時回傳null
  * @example
  *
@@ -41,29 +40,21 @@ let stringify = (obj) => {
  */
 let downloadEqs = async(dayStart, dayEnd) => {
 
-    //check dayStart
-    if (!isestr(dayStart)) {
-        throw new Error(`dayStart is not an effective string`)
-    }
-    let tStart = ot(dayStart)
-    if (!tStart.isValid()) {
-        throw new Error(`dayStart is not a valid date`)
+    //check dayStart, isday須為'YYYY-MM-DD'格式且日期確實存在, 可擋下dayjs非嚴格解析之溢位(如'2022-02-30'會被解為2022-03-02)
+    if (!isday(dayStart)) {
+        throw new Error(`dayStart is not a valid day, must be YYYY-MM-DD`)
     }
 
     //check dayEnd
-    if (!isestr(dayEnd)) {
-        throw new Error(`dayEnd is not an effective string`)
-    }
-    let tEnd = ot(dayEnd)
-    if (!tEnd.isValid()) {
-        throw new Error(`dayEnd is not a valid date`)
+    if (!isday(dayEnd)) {
+        throw new Error(`dayEnd is not a valid day, must be YYYY-MM-DD`)
     }
 
     let url = 'https://scweb.cwa.gov.tw/zh-tw/earthquake/ajaxhandler'
 
     //txtSDate, txtEDate, 氣象署端起訖日皆為整日含括, 故直接對應無須加減日
-    let txtSDate = tStart.format('YYYY-M-D')
-    let txtEDate = tEnd.format('YYYY-M-D')
+    let txtSDate = dayStart
+    let txtEDate = dayEnd
 
     let postData = {
         'draw': 6, //DataTables的請求序號, 網頁使用時會自動遞增

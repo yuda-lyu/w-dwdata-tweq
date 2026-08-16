@@ -73,14 +73,14 @@ describe('downloadEqs', function() {
     })
 
     it('test downloadEqs: 跨年區間之txtSDate與txtEDate', async () => {
-        let r = await getDates('2022-1-1', '2023-12-31')
-        let rr = { txtSDate: '2022-1-1', txtEDate: '2023-12-31' }
+        let r = await getDates('2022-01-01', '2023-12-31')
+        let rr = { txtSDate: '2022-01-01', txtEDate: '2023-12-31' }
         assert.strict.deepEqual(r, rr)
     })
 
-    it('test downloadEqs: 其他dayjs可解析之格式一律正規化為YYYY-M-D', async () => {
-        let r = await getDates('2022/03/05', '2022/03/09')
-        let rr = { txtSDate: '2022-3-5', txtEDate: '2022-3-9' }
+    it('test downloadEqs: 因僅收YYYY-MM-DD故原字串直送, 不做格式轉換', async () => {
+        let r = await getDates('2022-03-05', '2022-03-09')
+        let rr = { txtSDate: '2022-03-05', txtEDate: '2022-03-09' }
         assert.strict.deepEqual(r, rr)
     })
 
@@ -141,35 +141,41 @@ describe('downloadEqs', function() {
         assert.strict.deepEqual(r, rr)
     })
 
-    //vsInvalid, 無效之日期輸入
+    //vsInvalid, 無效之日期輸入, 涵蓋非字串、非YYYY-MM-DD格式與日期不存在三類
     let vsInvalid = [
-        { v: null, msg: 'is not an effective string' },
-        { v: undefined, msg: 'is not an effective string' },
-        { v: '', msg: 'is not an effective string' },
-        { v: 2022, msg: 'is not an effective string' },
-        { v: 'abc', msg: 'is not a valid date' },
+        null,
+        undefined,
+        '',
+        2022,
+        'abc',
+        '2022', //僅有年
+        '12-24', //缺年
+        '2022-1-1', //月與日未補零
+        '2022/12/24', //分隔符非-
+        '2022-13-01', //月份不存在
+        '2022-02-30', //日期不存在, dayjs非嚴格解析會溢位成2022-03-02
     ]
 
     it('test downloadEqs: dayStart無效時拋錯且不送出請求', async () => {
         let rs = []
-        for (let o of vsInvalid) {
-            let v = await call(o.v, '2022-12-24')
-            rs.push({ msg: _.get(v, 'err.message', ''), num: _.size(v.reqs) })
+        for (let v of vsInvalid) {
+            let o = await call(v, '2022-12-24')
+            rs.push({ msg: _.get(o, 'err.message', ''), num: _.size(o.reqs) })
         }
-        let rr = vsInvalid.map((o) => {
-            return { msg: `dayStart ${o.msg}`, num: 0 }
+        let rr = vsInvalid.map(() => {
+            return { msg: `dayStart is not a valid day, must be YYYY-MM-DD`, num: 0 }
         })
         assert.strict.deepEqual(rs, rr)
     })
 
     it('test downloadEqs: dayEnd無效時拋錯且不送出請求', async () => {
         let rs = []
-        for (let o of vsInvalid) {
-            let v = await call('2022-12-24', o.v)
-            rs.push({ msg: _.get(v, 'err.message', ''), num: _.size(v.reqs) })
+        for (let v of vsInvalid) {
+            let o = await call('2022-12-24', v)
+            rs.push({ msg: _.get(o, 'err.message', ''), num: _.size(o.reqs) })
         }
-        let rr = vsInvalid.map((o) => {
-            return { msg: `dayEnd ${o.msg}`, num: 0 }
+        let rr = vsInvalid.map(() => {
+            return { msg: `dayEnd is not a valid day, must be YYYY-MM-DD`, num: 0 }
         })
         assert.strict.deepEqual(rs, rr)
     })

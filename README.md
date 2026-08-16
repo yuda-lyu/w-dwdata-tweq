@@ -48,7 +48,7 @@ w.fsCleanFolder(fdTaskCpActualSrc)
 let fdTaskCpSrc = `./_taskCpSrc`
 w.fsCleanFolder(fdTaskCpSrc)
 
-let dayStart = '2022-1-1'
+let dayStart = '2022-01-01'
 let dayEnd = '2022-12-31'
 let opt = {
     fdTagRemove,

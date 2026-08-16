@@ -5,7 +5,7 @@ import w from 'wsemi'
 import downloadEqs from './src/downloadEqs.mjs'
 
 
-let dayStart = '2025-1-1'
+let dayStart = '2025-01-01'
 let dayEnd = '2025-12-31'
 let v = await downloadEqs(dayStart, dayEnd)
 console.log('v', v)

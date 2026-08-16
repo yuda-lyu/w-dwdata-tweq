@@ -1,6 +1,6 @@
 {
   "name": "w-dwdata-tweq",
-  "version": "1.0.36",
+  "version": "1.0.37",
   "main": "dist/w-dwdata-tweq.umd.js",
   "dependencies": {
     "sharp": "^0.35.3",

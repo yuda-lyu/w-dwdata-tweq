@@ -66,7 +66,7 @@ describe('once', function() {
 
         let pm = w.genPm()
 
-        let dayStart = '2022-1-1'
+        let dayStart = '2022-01-01'
         let dayEnd = '2022-12-31'
         let opt = {
             fdTagRemove,
@@ -199,21 +199,27 @@ describe('once', function() {
         assert.strict.deepEqual(r, rr)
     })
 
-    //vsInvalid, 無效之日期輸入
+    //vsInvalid, 無效之日期輸入, 涵蓋非字串、非YYYY-MM-DD格式與日期不存在三類
     let vsInvalid = [
-        { v: null, msg: 'is not an effective string' },
-        { v: undefined, msg: 'is not an effective string' },
-        { v: '', msg: 'is not an effective string' },
-        { v: 2022, msg: 'is not an effective string' },
-        { v: 'abc', msg: 'is not a valid date' },
+        null,
+        undefined,
+        '',
+        2022,
+        'abc',
+        '2022', //僅有年
+        '12-24', //缺年
+        '2022-1-1', //月與日未補零
+        '2022/12/24', //分隔符非-
+        '2022-13-01', //月份不存在
+        '2022-02-30', //日期不存在, dayjs非嚴格解析會溢位成2022-03-02
     ]
 
     //callInvalid, 令指定參數逐一帶入無效日期並取回錯誤訊息, 因檢核先於建立資料夾故不留下副作用
     let callInvalid = async(key) => {
         let rs = []
-        for (let o of vsInvalid) {
-            let dayStart = key === 'dayStart' ? o.v : '2022-1-1'
-            let dayEnd = key === 'dayEnd' ? o.v : '2022-12-31'
+        for (let v of vsInvalid) {
+            let dayStart = key === 'dayStart' ? v : '2022-01-01'
+            let dayEnd = key === 'dayEnd' ? v : '2022-12-31'
             let msg = ''
             await WDwdataTweq(dayStart, dayEnd)
                 .catch((err) => {
@@ -226,16 +232,16 @@ describe('once', function() {
 
     it('test once: dayStart無效時拋錯', async () => {
         let r = await callInvalid('dayStart')
-        let rr = vsInvalid.map((o) => {
-            return `dayStart ${o.msg}`
+        let rr = vsInvalid.map(() => {
+            return `dayStart is not a valid day, must be YYYY-MM-DD`
         })
         assert.strict.deepEqual(r, rr)
     })
 
     it('test once: dayEnd無效時拋錯', async () => {
         let r = await callInvalid('dayEnd')
-        let rr = vsInvalid.map((o) => {
-            return `dayEnd ${o.msg}`
+        let rr = vsInvalid.map(() => {
+            return `dayEnd is not a valid day, must be YYYY-MM-DD`
         })
         assert.strict.deepEqual(r, rr)
     })

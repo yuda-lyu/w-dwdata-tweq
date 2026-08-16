@@ -7,7 +7,7 @@ import isp0int from 'wsemi/src/isp0int.mjs'
 import isbol from 'wsemi/src/isbol.mjs'
 import isfun from 'wsemi/src/isfun.mjs'
 import cdbl from 'wsemi/src/cdbl.mjs'
-import ot from 'dayjs'
+import isday from 'wsemi/src/isday.mjs'
 import fsIsFolder from 'wsemi/src/fsIsFolder.mjs'
 import fsCleanFolder from 'wsemi/src/fsCleanFolder.mjs'
 import fsCreateFolder from 'wsemi/src/fsCreateFolder.mjs'
@@ -27,8 +27,8 @@ import cropPic from './cropPic.mjs'
  *
  * 執行階段最新數據放置於fdDwAttime，前次數據會於結束前自動備份至fdDwCurrent
  *
- * @param {String} dayStart 輸入數據開始日字串，需為dayjs可解析之日期，如'2022-1-1'，氣象署端為整日含括故當日數據亦會取得
- * @param {String} dayEnd 輸入數據結束日字串，需為dayjs可解析之日期，如'2022-12-31'，氣象署端為整日含括故當日數據亦會取得
+ * @param {String} dayStart 輸入數據開始日字串，需為'YYYY-MM-DD'格式之有效日期，如'2022-01-01'，氣象署端為整日含括故當日數據亦會取得
+ * @param {String} dayEnd 輸入數據結束日字串，需為'YYYY-MM-DD'格式之有效日期，如'2022-12-31'，氣象署端為整日含括故當日數據亦會取得
  * @param {Object} [opt={}] 輸入設定物件，預設{}
  * @param {String} [opt.keyId='id'] 輸入各筆數據之主鍵字串，預設'id'
  * @param {String} [opt.fdTagRemove='./_tagRemove'] 輸入暫存標記為刪除數據資料夾字串，預設'./_tagRemove'
@@ -75,7 +75,7 @@ import cropPic from './cropPic.mjs'
  * let fdTaskCpSrc = `./_taskCpSrc`
  * w.fsCleanFolder(fdTaskCpSrc)
  *
- * let dayStart = '2022-1-1'
+ * let dayStart = '2022-01-01'
  * let dayEnd = '2022-12-31'
  * let opt = {
  *     fdTagRemove,
@@ -118,20 +118,14 @@ import cropPic from './cropPic.mjs'
  */
 let WDwdataTweq = async(dayStart, dayEnd, opt = {}) => {
 
-    //check dayStart
-    if (!isestr(dayStart)) {
-        throw new Error(`dayStart is not an effective string`)
-    }
-    if (!ot(dayStart).isValid()) {
-        throw new Error(`dayStart is not a valid date`)
+    //check dayStart, isday須為'YYYY-MM-DD'格式且日期確實存在
+    if (!isday(dayStart)) {
+        throw new Error(`dayStart is not a valid day, must be YYYY-MM-DD`)
     }
 
     //check dayEnd
-    if (!isestr(dayEnd)) {
-        throw new Error(`dayEnd is not an effective string`)
-    }
-    if (!ot(dayEnd).isValid()) {
-        throw new Error(`dayEnd is not a valid date`)
+    if (!isday(dayEnd)) {
+        throw new Error(`dayEnd is not a valid day, must be YYYY-MM-DD`)
     }
 
     //keyId
