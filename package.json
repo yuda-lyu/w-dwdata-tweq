@@ -1,14 +1,14 @@
 {
   "name": "w-dwdata-tweq",
-  "version": "1.0.41",
+  "version": "1.0.42",
   "main": "dist/w-dwdata-tweq.umd.js",
   "dependencies": {
     "sharp": "^0.35.3",
-    "w-dwdata-builder": "^1.0.46",
-    "wsemi": "^1.8.78"
+    "w-dwdata-builder": "^1.0.47",
+    "wsemi": "^1.8.79"
   },
   "devDependencies": {
-    "w-package-tools": "^1.1.14"
+    "w-package-tools": "^1.1.15"
   },
   "scripts": {
     "test": "mocha --parallel --timeout 60000",
