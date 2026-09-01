@@ -1,11 +1,11 @@
 {
   "name": "w-dwdata-tweq",
-  "version": "1.0.43",
+  "version": "1.0.44",
   "main": "dist/w-dwdata-tweq.umd.js",
   "dependencies": {
     "sharp": "^0.35.3",
-    "w-dwdata-builder": "^1.0.48",
-    "wsemi": "^1.8.80"
+    "w-dwdata-builder": "^1.0.49",
+    "wsemi": "^1.8.81"
   },
   "devDependencies": {
     "w-package-tools": "^1.1.15"
