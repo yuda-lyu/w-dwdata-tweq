@@ -248,7 +248,7 @@ let WDwdataTweq = async(dayStart, dayEnd, opt = {}) => {
     let funGetCurrentDef = async() => {
 
         //vfps
-        let vfps = fsTreeFolder(fdDwCurrent, 1)
+        let vfps = fsTreeFolder(fdDwCurrent, { levelLimit: 1 })
         // console.log('vfps', vfps)
 
         //eqs
