@@ -88,3 +88,12 @@ ev.on('change', (msg) => {
 // change { event: 'proc-add-callfun-add', id: '111002', msg: 'done' }
 // ...
 ```
+
+## Breaking changes
+
+### One failing item no longer cancels the round; only successful items go into `fdDwCurrent`
+Applies to the release after 1.0.91 (with `w-dwdata-builder` 1.1.46 and `w-data-scheduler` 1.0.77 or later).
+
+- **Before**: when `funAdd`, `funModify` or `funRemove` failed for one item, the rest of the round was canceled, and `fdDwCurrent` was still made an exact copy of `fdDwAttime`, so the failed and the skipped items were never processed again.
+- **After**: the other items are processed as usual; a failed item is reported by the `error` event of its stage and by the `warn` event `fail-items-stage-main`. Only the successful items are applied to `fdDwCurrent` (an exact copy when every item succeeded; nothing when the round was canceled), so the failed items are compared and processed again in the next round. `funBeforeEnd` and the `end` listeners receive the result `{ success, failed, msgCancel }`.
+- **Migration**: `funAdd`, `funModify` and `funRemove` must be safe to call again. See the Breaking changes of [w-dwdata-builder](https://github.com/yuda-lyu/w-dwdata-builder) for the details.

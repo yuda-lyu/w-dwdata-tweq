@@ -249,7 +249,7 @@ describe('srLog', function() {
         { type: 'info', event: 'end', msg: 'done' },
     ]
 
-    //msChangeError, funAdd拋錯時各階段所發送之紀錄, 因beforeEnd階段不論有無錯誤皆執行, 故仍有proc-callfun-beforeEnd
+    //msChangeError, funAdd拋錯時各階段所發送之紀錄, 單項處理失敗不取消本輪(w-data-scheduler 1.0.77起), 故無cancel-stage-main與cancel-stage-beforeEnd; 逐項處理結束後另發出1筆warn彙總紀錄fail-items-stage-main, 其後照常執行beforeEnd
     let msChangeError = [
         { type: 'info', event: 'start', msg: 'running...' },
         { type: 'info', event: 'proc-callfun-afterStart', msg: 'start...' },
@@ -270,10 +270,15 @@ describe('srLog', function() {
         },
         { type: 'info', event: 'proc-add-callfun-add', id: '114116', msg: 'start...' },
         { type: 'error', event: 'proc-add-callfun-add', id: '114116', msg: msgErrFunAdd },
-        { type: 'info', event: 'cancel-stage-main', msg: 'error at proc-add-callfun-add' },
+        {
+            type: 'warn',
+            event: 'fail-items-stage-main',
+            numFail: 1,
+            items: [{ id: '114116', mode: 'add', event: 'proc-add-callfun-add', msg: 'funAdd failed' }],
+            msg: 'some items failed'
+        },
         { type: 'info', event: 'proc-callfun-beforeEnd', msg: 'start...' },
         { type: 'info', event: 'proc-callfun-beforeEnd', msg: 'done' },
-        { type: 'info', event: 'cancel-stage-beforeEnd', msg: 'error at proc-add-callfun-add' },
         { type: 'info', event: 'end', msg: 'done' },
     ]
 
@@ -337,17 +342,25 @@ describe('srLog', function() {
         assert.strict.deepEqual(pickByType(r.msChange, 'error'), rr)
     })
 
-    it('test srLog: funAdd拋錯時, 後續取消與結束階段仍紀錄於srLog.info', async () => {
+    it('test srLog: funAdd拋錯時, 不取消本輪, 結束階段仍紀錄於srLog.info', async () => {
         let r = await test({ tag: 'c6', errFunAdd: true })
         let rr = pickByType(msChangeError, 'info')
         assert.strict.deepEqual(r.msInfo.map(rmTime), rr)
     })
 
-    it('test srLog: 僅提供info時, 未提供之error不影響change事件發送', async () => {
+    it('test srLog: funAdd拋錯時, 失敗彙總紀錄於srLog.warn且change事件type為warn', async () => {
+        let r = await test({ tag: 'c13', errFunAdd: true })
+        let rr = pickByType(msChangeError, 'warn')
+        assert.strict.deepEqual(r.msWarn, rr)
+        assert.strict.deepEqual(pickByType(r.msChange, 'warn'), rr)
+    })
+
+    it('test srLog: 僅提供info時, 未提供之warn與error不影響change事件發送', async () => {
         let r = await test({ tag: 'c7', errFunAdd: true, keysSrLog: ['info'] })
         let rr = msChangeError
         assert.strict.deepEqual(r.msChange.map(rmTime), rr)
         assert.strict.deepEqual(r.msInfo.map(rmTime), pickByType(msChangeError, 'info'))
+        assert.strict.deepEqual(_.size(r.msWarn), 0)
         assert.strict.deepEqual(_.size(r.msError), 0)
     })
 
@@ -368,21 +381,30 @@ describe('srLog', function() {
         return { numErr, numCancel, numAll: _.size(ms) }
     }
 
-    it('test useShowLog: 預設為true時, 錯誤與取消訊息輸出至console', async () => {
+    it('test useShowLog: 預設為true時, funAdd拋錯之錯誤輸出至console, 本輪不取消故無取消訊息', async () => {
         let r = await test({ tag: 'c9', errFunAdd: true })
-        let rr = { numErr: 1, numCancel: 2, numAll: 3 } //funAdd之catch輸出1次錯誤, 主階段與結束前階段各輸出1次取消訊息
+        let rr = { numErr: 1, numCancel: 0, numAll: 1 } //funAdd之catch輸出1次錯誤, 單項失敗不取消本輪
+        assert.strict.deepEqual(cntConsole(r.msConsole), rr)
+    })
+
+    it('test useShowLog: 預設為true時, funDownload拋錯之錯誤與取消訊息輸出至console', async () => {
+        let r = await test({ tag: 'c14', errFunDownload: true })
+        let rr = { numErr: 1, numCancel: 2, numAll: 3 } //funDownload之catch輸出1次錯誤, 主階段與結束前階段各輸出1次取消訊息
         assert.strict.deepEqual(cntConsole(r.msConsole), rr)
     })
 
     it('test useShowLog: 為false時, 不輸出至console', async () => {
-        let r = await test({ tag: 'c10', errFunAdd: true, useShowLog: false })
         let rr = { numErr: 0, numCancel: 0, numAll: 0 }
+        let r = await test({ tag: 'c10', errFunAdd: true, useShowLog: false })
         assert.strict.deepEqual(cntConsole(r.msConsole), rr)
+        let rDl = await test({ tag: 'c10dl', errFunDownload: true, useShowLog: false })
+        assert.strict.deepEqual(cntConsole(rDl.msConsole), rr)
     })
 
     it('test useShowLog: 為false時, srLog紀錄不受影響', async () => {
         let r = await test({ tag: 'c11', errFunAdd: true, useShowLog: false })
         assert.strict.deepEqual(r.msInfo.map(rmTime), pickByType(msChangeError, 'info'))
+        assert.strict.deepEqual(r.msWarn, pickByType(msChangeError, 'warn'))
         assert.strict.deepEqual(r.msError, pickByType(msChangeError, 'error'))
     })
 

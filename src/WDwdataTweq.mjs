@@ -25,7 +25,7 @@ import cropPic from './cropPic.mjs'
  *
  * 因各檔案小，真實數據直接視為hash數據做差異比對
  *
- * 執行階段最新數據放置於fdDwAttime，前次數據會於結束前自動備份至fdDwCurrent
+ * 執行階段最新數據放置於fdDwAttime，結束前只把本輪處理成功之項更新至fdDwCurrent(全部成功時為完全同步；處理失敗或未處理之項維持前次內容、下輪重試；本輪取消時不更新)，見w-dwdata-builder
  *
  * @param {String} dayStart 輸入數據開始日字串，需為'YYYY-MM-DD'格式之有效日期，如'2022-01-01'，氣象署端為整日含括故當日數據亦會取得
  * @param {String} dayEnd 輸入數據結束日字串，需為'YYYY-MM-DD'格式之有效日期，如'2022-12-31'，氣象署端為整日含括故當日數據亦會取得
@@ -37,7 +37,7 @@ import cropPic from './cropPic.mjs'
  * @param {String} [opt.fdResult='./_result'] 輸入已下載數據所連動生成數據資料夾字串，預設'./_result'
  * @param {String} [opt.fdTaskCpActualSrc='./_taskCpActualSrc'] 輸入任務狀態之來源端完整資料夾字串，預設'./_taskCpActualSrc'
  * @param {String} [opt.fdTaskCpSrc='./_taskCpSrc'] 輸入任務狀態之來源端資料夾字串，預設'./_taskCpSrc'
- * @param {Object} [opt.srLog=null] 輸入事件紀錄物件，需提供函數info、warn與error，各接收一紀錄物件，供偵測數據變更時紀錄各階段事件，未提供時不進行紀錄，其中warn目前保留未使用，預設null
+ * @param {Object} [opt.srLog=null] 輸入事件紀錄物件，需提供函數info、warn與error，各接收一紀錄物件，供偵測數據變更時紀錄各階段事件，未提供時不進行紀錄，warn用於逐項處理有失敗之彙總(fail-items-stage-main)與更新fdDwCurrent時未套用之項(move-data-to-current)，預設null
  * @param {Boolean} [opt.useShowLog=true] 輸入是否於偵測過程將錯誤與取消訊息輸出至console布林值，預設true
  * @param {Function} [opt.funDownload=null] 輸入取得當前下載數據之函數，回傳資料陣列，預設null
  * @param {Function} [opt.funGetCurrent=null] 輸入取得已下載數據之函數，回傳資料陣列，預設null
